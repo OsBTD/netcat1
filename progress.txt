@@ -1,0 +1,93 @@
+Current Progress:
+TCP Connection:
+
+Done: Established a TCP connection between the server and multiple clients.
+
+Mutex: Ensured thread safety using mutexes for concurrent access to the clients slice.
+
+Client Connections:
+
+Done: Handled client connections and disconnections.
+
+Broadcasting Messages: Implemented broadcasting of messages from one client to all others.
+
+Control Connections Quantity:
+
+Pending: Implement logic to limit the number of concurrent connections to a maximum of 10.
+
+Prompt for Username:
+
+Pending: Prompt clients for their usernames upon connection and store these usernames.
+
+Broadcast Join/Leave Notifications:
+
+Pending: Notify all clients when a new client joins or leaves the chat.
+
+Message Formatting:
+
+Pending: Format messages with timestamps and usernames in the specified format: [2020-01-20 15:48:41][client.name]:[client.message].
+
+Previous Messages for New Clients:
+
+Pending: Send all previous chat messages to newly connected clients.
+
+Next Steps:
+Prompting for and Storing Usernames:
+
+When a new client connects, prompt them for a username.
+
+Store the username in association with their connection.
+
+Controlling Connection Quantity:
+
+Implement logic to limit the number of concurrent client connections to 10.
+
+Reject additional connections if the limit is reached.
+
+Broadcasting Join/Leave Notifications:
+
+Notify all connected clients when a new client joins or an existing client leaves the chat.
+
+Example notification: "User [username] has joined the chat."
+
+Message Formatting with Timestamps:
+
+Prepend each message with the current timestamp and the sender's username.
+
+Format: [2020-01-20 15:48:41][client.name]:[client.message].
+
+Storing and Sending Previous Messages:
+
+Store all chat messages in a list.
+
+When a new client joins, send them all previous messages.
+
+Improving Error Handling:
+
+Gracefully handle any potential errors during connection, disconnection, reading, or writing.
+
+Detailed Actions:
+Prompting for Usernames:
+Prompt: Upon connection, ask for a username.
+
+Store: Store the username using a map or struct.
+
+Controlling Connection Quantity:
+Check: Before accepting a new connection, check the current number of connected clients.
+
+Reject: If the limit is reached, send a message to the client and close the connection.
+
+Broadcasting Join/Leave Notifications:
+Join: Broadcast a message like "User [username] has joined the chat."
+
+Leave: Broadcast a message like "User [username] has left the chat."
+
+Message Formatting:
+Timestamp: Use time.Now().Format("2006-01-02 15:04:05") to get the current timestamp.
+
+Format: Prepend the timestamp and username to each message.
+
+Storing and Sending Previous Messages:
+Store: Keep a list of all messages.
+
+Send: On new client connection, iterate over the stored messages and send them to the new client.
