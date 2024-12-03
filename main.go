@@ -4,12 +4,15 @@ import (
 	"io"
 	"log"
 	"net"
+	"strings"
 	"sync"
 )
 
 var (
 	clients []net.Conn
 	mutex   sync.Mutex
+	users   = make(map[net.Conn]string)
+	user    string
 )
 
 func main() {
@@ -35,14 +38,13 @@ func main() {
 
 func Handle(conn net.Conn) {
 	conn.Write([]byte("Welcome to TCP-Chat!\n         _nnnn_\n        dGGGGMMb\n       @p~qp~~qMb\n       M|@||@) M|\n       @,----.JM|\n      JS^\\__/  qKL\n     dZP        qKRb\n    dZP          qKKb\n   fZP            SMMb\n   HZM            MMMM\n   FqM            MMMM\n __| \".        |\\dS\"qML\n |    `.       | `' \\Zq\n_)      \\.___.,|     .'\n\\____   )MMMMMP|   .'\n     `-'       `--'\n[ENTER YOUR NAME]: "))
+	bufferName := make([]byte, 1024)
+	m, _ := conn.Read(bufferName)
 
-	clientgone := "client has disconnected"
-	// bufferName := make([]byte, 1024)
-	// var users map[string]net.Conn
-	// m, _ := conn.Read(bufferName)
+	username := bufferName[:m]
+	users[conn] = strings.TrimSpace(string(username))
 
-	// username := bufferName[:m]
-	// users = append(users, username)
+	clientgone := "has disconnected"
 	for {
 		buffer := make([]byte, 1024)
 		n, err := conn.Read(buffer)
@@ -58,7 +60,10 @@ func Handle(conn net.Conn) {
 					}
 				}
 				for _, client := range clients {
-					client.Write([]byte(clientgone))
+					if conn == client {
+						user = users[conn]
+					}
+					client.Write([]byte(user + " " + clientgone))
 				}
 
 				mutex.Unlock()
@@ -76,9 +81,10 @@ func Handle(conn net.Conn) {
 
 		for _, client := range clients {
 			if conn == client {
+				user = users[conn]
 				continue
 			}
-			_, err3 := client.Write([]byte(string(message)))
+			_, err3 := client.Write([]byte(user + ":" + " " + string(message)))
 			if err3 != nil {
 				log.Println("error sending message to client", err)
 			}
